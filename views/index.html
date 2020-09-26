@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- prettier-ignore -->
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="shortcut icon" href="https://tymick.me/favicon.ico" type="image/x-icon" />
+
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.min.css" />
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/styles/default.min.css" />
+
+    <title>Exercise tracker – Ty Mick</title>
+  </head>
+
+  <body style="background-color: #dee2e6">
+    <div class="container-sm my-5">
+      <h1 class="mb-4">Exercise tracker</h1>
+
+      <!-- API test front end -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h4 class="mb-3">Test this API:</h4>
+
+          <!-- Create new user -->
+          <form
+            id="createNewUser"
+            action="/api/exercise/new-user"
+            method="POST"
+            class="mb-4"
+          >
+            <h5>
+              Create a new user
+              <small class="text-muted"
+                >(<samp>/api/exercise/new-user</samp>)</small
+              >
+            </h5>
+            <div class="form-group">
+              <label for="newUsername">Username</label>
+              <input
+                id="newUsername"
+                type="text"
+                name="username"
+                class="form-control"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">POST</button>
+          </form>
+
+          <!-- Get all users -->
+          <h5>Get all users</h5>
+          <form id="getAllUsers" class="form-inline mb-4">
+            <label class="sr-only" for="getUsersUrl">API URL</label>
+            <input
+              type="text"
+              id="getUsersUrl"
+              class="form-control mb-2 mr-2"
+              value="/api/exercise/users"
+              style="width: 10.6em"
+              disabled
+            />
+            <button type="submit" class="btn btn-primary mb-2">GET</button>
+          </form>
+
+          <!-- Add exercise -->
+          <form
+            id="addExercise"
+            action="/api/exercise/add"
+            method="POST"
+            class="mb-4"
+          >
+            <h5>
+              Add an exercise session
+              <small class="text-muted">(<samp>/api/exercise/add</samp>)</small>
+            </h5>
+
+            <div class="form-row">
+              <div class="form-group col-12 col-sm-6">
+                <label for="userIdAdd"
+                  >UserId <small class="text-muted">(required)</small></label
+                >
+                <input
+                  id="userIdAdd"
+                  type="text"
+                  name="userId"
+                  aria-describedby="userIdHelp"
+                  class="form-control"
+                  required
+                />
+                <small id="userIdHelp" class="form-text text-muted"
+                  >Not the <code>username</code> but the <code>_id</code> that
+                  is returned by the API when you create a new user.</small
+                >
+              </div>
+
+              <div class="form-group col-12 col-sm-6">
+                <label for="description"
+                  >Description
+                  <small class="text-muted">(required)</small></label
+                >
+                <input
+                  id="description"
+                  type="text"
+                  name="description"
+                  class="form-control"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-12 col-sm-6">
+                <label for="duration"
+                  >Duration (minutes)
+                  <small class="text-muted">(required)</small></label
+                >
+                <input
+                  id="duration"
+                  type="number"
+                  name="duration"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="form-group col-12 col-sm-6">
+                <label for="date">Date (YYYY-MM-DD)</label>
+                <input
+                  id="date"
+                  type="text"
+                  name="date"
+                  class="form-control datepicker"
+                />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">POST</button>
+          </form>
+
+          <!-- Get exercise log -->
+          <form id="getLog">
+            <h5>Get a user's exercise log</h5>
+
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="getLogUrl"
+                  >/api/exercise/log?userId=</span
+                >
+              </div>
+              <input
+                type="text"
+                name="userId"
+                class="form-control"
+                aria-label="userId"
+                aria-describedby="getLogUrl getUserIdHelp"
+                style="width: 7em; flex: none"
+              />
+              <div class="input-group-append input-group-prepend">
+                <span class="input-group-text" id="fromQuery">&from=</span>
+              </div>
+              <input
+                type="text"
+                name="from"
+                class="form-control datepicker"
+                aria-label="from"
+                aria-describedby="fromQuery fromToHelp"
+                style="width: 7.5em; flex: none"
+              />
+              <div class="input-group-append input-group-prepend">
+                <span class="input-group-text" id="toQuery">&to=</span>
+              </div>
+              <input
+                type="text"
+                name="to"
+                class="form-control datepicker"
+                aria-label="to"
+                aria-describedby="toQuery fromToHelp"
+                style="width: 7.5em; flex: none"
+              />
+              <div class="input-group-append input-group-prepend">
+                <span class="input-group-text" id="limitQuery">&limit=</span>
+              </div>
+              <input
+                type="text"
+                name="limit"
+                class="form-control"
+                aria-label="limit"
+                aria-describedby="limitQuery limitHelp"
+                style="width: 4em; flex: none"
+              />
+            </div>
+
+            <small class="form-text text-muted mb-3">
+              <span id="getUserIdHelp"
+                ><code>userId</code> is the <code>_id</code> returned by the API
+                and is required.</span
+              >
+              <br />
+              <span id="fromToHelp"
+                ><code>from</code> and <code>to</code> are dates in YYYY-MM-DD
+                format.</span
+              >
+              <br />
+              <span id="limitHelp"
+                ><code>limit</code> is the maximum number of exercise sessions
+                to be returned.</span
+              >
+            </small>
+
+            <button type="submit" class="btn btn-primary">GET</button>
+          </form>
+
+          <!-- API output -->
+          <div
+            class="modal fade"
+            id="apiOutputModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="apiOutputLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="apiOutputLabel">API response:</h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <pre id="apiOutput" class="hljs bg-white mb-0"></pre>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explanation -->
+      <p class="lead font-italic">
+        View the source on
+        <a href="https://github.com/tywmick/exercise-tracker-python">GitHub</a>
+        or
+        <a href="https://repl.it/@tywmick/exercise-tracker-python">Repl.it</a>.
+      </p>
+
+      <p>
+        This is a Python port of my
+        <a href="https://ty-exercise-tracker.glitch.me"
+          >Node.js exercise tracker</a
+        >, built with
+        <a href="https://flask.palletsprojects.com/en/1.1.x/">Flask</a> and
+        <a href="https://sqlite.org/index.html">SQLite</a>. The above front end
+        API test also uses <a href="https://getbootstrap.com/">Bootstrap</a>,
+        <a href="https://jquery.com/">jQuery</a>,
+        <a href="https://github.com/dylang/shortid">jQuery UI</a>, and
+        <a href="https://highlightjs.org/">highlight.js</a>. The API fulfills
+        the following user stories:
+      </p>
+
+      <ol>
+        <li>
+          I can create a user by posting form data username to
+          <code>/api/exercise/new-user</code> and returned will be an object
+          with <code>username</code> and <code>_id</code>.
+        </li>
+
+        <li>
+          I can get an array of all users by getting
+          <code>api/exercise/users</code> with the same info as when creating a
+          user.
+        </li>
+
+        <li>
+          I can add an exercise to any user by posting form data
+          <code>userId</code> (<code>_id</code>), <code>description</code>,
+          <code>duration</code>, and optionally <code>date</code> to
+          <code>/api/exercise/add</code>. If no date supplied it will use
+          current date. Returned will the the user object with also with the
+          exercise fields added.
+        </li>
+
+        <li>
+          I can retrieve a full exercise log of any user by getting
+          <code>/api/exercise/log</code> with a parameter of
+          <code>userId</code> (<code>_id</code>). Return will be the user object
+          with added array log and count (total exercise count).
+        </li>
+
+        <li>
+          I can retrieve part of the log of any user by also passing along
+          optional parameters of <code>from</code> &amp; <code>to</code> or
+          <code>limit</code>. (Date format <samp>yyyy-mm-dd</samp>,
+          <code>limit</code> = int)
+        </li>
+      </ol>
+    </div>
+
+    <!-- prettier-ignore -->
+    <span>
+      <!-- jQuery -->
+      <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <!-- Popper -->
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+      <!-- Bootstrap -->
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>      
+      <!-- jQuery UI -->
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+      <!-- highlight.js -->
+      <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/highlight.min.js"></script>
+    </span>
+
+    <!-- Page scripts -->
+    <script>
+      $(function () {
+        $(".datepicker").datepicker({
+          changeMonth: true,
+          changeYear: true,
+          dateFormat: "yy-mm-dd",
+          constrainInput: false,
+        });
+      });
+    </script>
+    <script type="text/javascript" src="/api-tests.js"></script>
+  </body>
+</html>
