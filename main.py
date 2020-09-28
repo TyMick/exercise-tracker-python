@@ -1,44 +1,11 @@
-from flask import Flask, g, render_template, request, jsonify, redirect
-from exercise import create_new_user, get_all_users, add_exercise, get_exercise_log
-import sqlite3
-import re
+from flask import Flask, g, render_template
+from database import init_db
+from api.exercise import create_new_user, get_all_users, add_exercise, get_exercise_log
 
 app = Flask("app", static_folder="public", template_folder="views")
 
-DATABASE = "shorturls.db"
-
-
-def get_db():
-    db = getattr(g, "_database", None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-    return db
-
-
-# Initialize database
 with app.app_context():
-    db = get_db()
-    c = db.cursor()
-    c.execute(
-        """
-        CREATE TABLE IF NOT EXISTS User(
-            id TEXT PRIMARY KEY,
-            username TEXT UNIQUE NOT NULL CHECK (length(username) <= 32)
-        )
-        """
-    )
-    c.execute(
-        """
-        CREATE TABLE IF NOT EXISTS Exercise(
-            username TEXT,
-            userId TEXT NOT NULL,
-            description TEXT NOT NULL,
-            duration INTEGER NOT NULL CHECK (duration > 0),
-            date REAL DEFAULT (julianday("now"))
-        )
-        """
-    )
-    db.commit()
+    init_db()
 
 
 @app.route("/")
