@@ -1,6 +1,7 @@
 from flask import request, jsonify, redirect
 from database import get_db
 from datetime import date as py_date
+from collections import OrderedDict
 import sqlite3
 import nanoid
 
@@ -90,4 +91,59 @@ def add_exercise():
 
 
 def get_exercise_log():
-    pass
+    if not request.args["userId"]:
+        return {"error": "userId is required"}
+    user_id = request.args["userId"]
+
+    from_date = to_date = query_limit = None
+    try:
+        if request.args["from"]:
+            from_date = py_date.fromisoformat(request.args["from"])
+        if request.args["to"]:
+            to_date = py_date.fromisoformat(request.args["to"])
+        if request.args["limit"]:
+            query_limit = int(request.args["limit"])
+    except ValueError as e:
+        if "Invalid isoformat" in e.args[0]:
+            return {"error": "Invalid date input"}
+        if "invalid literal for int" in e.args[0]:
+            return {"error": "Invalid limit input"}
+
+    try:
+        db = get_db()
+        c = db.cursor()
+
+        c.execute("SELECT username, _id FROM User WHERE _id = ?", (user_id,))
+        user = c.fetchone()
+        if user is None:
+            return {"error": "No such userId"}
+        username = user["username"]
+
+        # Build query
+        query = "SELECT description, duration, date FROM Exercise WHERE userId == ?"
+        params = [user_id]
+        if from_date:
+            query += " AND date(date) >= date(?)"
+            params.append(from_date.isoformat())
+        if to_date:
+            query += " AND date(date) <= date(?)"
+            params.append(to_date.isoformat())
+        query += " ORDER BY date(date) DESC"
+        if query_limit:
+            query += " LIMIT ?"
+            params.append(query_limit)
+
+        c.execute(query, tuple(params))
+
+        exercises = c.fetchall()
+        return {
+            "username": username,
+            "_id": user_id,
+            "from": from_date.isoformat(),
+            "to": to_date.isoformat(),
+            "count": len(exercises),
+            "log": exercises,
+        }
+
+    except:
+        return {"error": "Database error"}
