@@ -3,9 +3,9 @@ from database import get_db
 import nanoid
 
 
-def create_new_user(): # test userid: KGqwTYf4HH
+def create_new_user(): # test _id: J9LyZZ9VPD
     username = request.form["username"]
-    user_id = nanoid.generate(
+    _id = nanoid.generate(
         alphabet="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
         size=10,
     )
@@ -13,10 +13,10 @@ def create_new_user(): # test userid: KGqwTYf4HH
     try:
         db = get_db()
         db.cursor().execute(
-            "INSERT INTO User(id, username) VALUES(?, ?)", (user_id, username)
+            "INSERT INTO User(_id, username) VALUES(?, ?)", (_id, username)
         )
         db.commit()
-        return jsonify(username=username, _id=user_id)
+        return jsonify(username=username, _id=_id)
     except:
         return jsonify(error="database error", code=500)
 

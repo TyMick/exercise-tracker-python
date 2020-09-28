@@ -17,7 +17,7 @@ def init_db():
     c.execute(
         """
         CREATE TABLE IF NOT EXISTS User(
-            id TEXT PRIMARY KEY,
+            _id TEXT PRIMARY KEY,
             username TEXT UNIQUE NOT NULL CHECK (length(username) <= 32)
         )
         """
