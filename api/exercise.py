@@ -10,12 +10,15 @@ def create_new_user(): # test userid: KGqwTYf4HH
         size=10,
     )
 
-    db = get_db()
-    db.cursor().execute(
-        "INSERT INTO User(id, username) VALUES(?, ?)", (user_id, username)
-    )
-    db.commit()
-    return jsonify(username=username, _id=user_id)
+    try:
+        db = get_db()
+        db.cursor().execute(
+            "INSERT INTO User(id, username) VALUES(?, ?)", (user_id, username)
+        )
+        db.commit()
+        return jsonify(username=username, _id=user_id)
+    except:
+        return jsonify(error="database error", code=500)
 
 
 def get_all_users():
