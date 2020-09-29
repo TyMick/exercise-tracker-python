@@ -1,5 +1,7 @@
 # Python exercise tracker
 
+[![Run on Repl.it](https://repl.it/badge/github/tywmick/exercise-tracker-python)](https://repl.it/github/tywmick/exercise-tracker-python)
+
 This is a Python port of my [Node.js exercise tracker](https://ty-exercise-tracker.glitch.me/), built with [Flask](https://flask.palletsprojects.com/en/1.1.x/) and [SQLite](https://sqlite.org/index.html). The front end API on the home page also uses [Bootstrap](https://getbootstrap.com/), [jQuery](https://jquery.com/), [jQuery UI](https://github.com/dylang/shortid), and [highlight.js](https://highlightjs.org/). The API fulfills the following user stories:
 
 1. I can create a user by posting form data username to `/api/exercise/new-user` and returned will be an object with `username` and `_id`.
