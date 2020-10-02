@@ -139,8 +139,8 @@ def get_exercise_log():
         return {
             "username": username,
             "_id": user_id,
-            "from": from_date.isoformat(),
-            "to": to_date.isoformat(),
+            "from": None if from_date is None else from_date.isoformat(),
+            "to": None if to_date is None else to_date.isoformat(),
             "count": len(exercises),
             "log": exercises,
         }
